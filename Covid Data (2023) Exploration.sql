@@ -91,7 +91,7 @@ Create View Total_Death_Count as
 select location, max(cast(total_deaths as int)) TotalDeathCount
 from Portfolio..CovidDeaths
 where continent is not null
-and location is not in ('World', 'European Union', 'International')
+and location not in ('World', 'European Union', 'International')
 group by location
 
 Create View InfectionCount as
