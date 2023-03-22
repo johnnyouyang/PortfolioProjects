@@ -81,14 +81,27 @@ join Portfolio..CovidVaccinations v
 	and d.date = v.date
 where d.continent is not null
 
-Create View GlobalDNR as
+Create View GloabalDeaths as
 select sum(new_cases) total_cases, sum(cast(new_deaths as int)) toal_deaths, sum(cast(new_deaths as int))/nullif(sum(new_cases),0) *100 DeathNewRatio
 from Portfolio..CovidDeaths
 where continent is not null
+order by 1,2
 
 Create View Total_Death_Count as
-select continent, location, max(cast(total_deaths as int)) TotalDeathCount
+select location, max(cast(total_deaths as int)) TotalDeathCount
 from Portfolio..CovidDeaths
 where continent is not null
-group by continent, location
+and location is not in ('World', 'European Union', 'International')
+group by location
 
+Create View InfectionCount as
+Select Location, Population, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
+From Portfolio..CovidDeaths
+Group by Location, Population
+order by PercentPopulationInfected desc
+
+Create View InfectionCount_bydate as
+Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
+From PortfolioProject..CovidDeaths
+Group by Location, Population, date
+order by PercentPopulationInfected desc
