@@ -88,11 +88,12 @@ where continent is not null
 order by 1,2
 
 Create View Total_Death_Count as
-select location, max(cast(total_deaths as int)) TotalDeathCount
+select continent, max(cast(total_deaths as int)) TotalDeathCount
 from Portfolio..CovidDeaths
 where continent is not null
 and location not in ('World', 'European Union', 'International')
-group by location
+group by continent
+order by TotalDeathCount desc
 
 Create View InfectionCount as
 Select Location, Population, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
@@ -102,6 +103,6 @@ order by PercentPopulationInfected desc
 
 Create View InfectionCount_bydate as
 Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
-From PortfolioProject..CovidDeaths
+From Portfolio..CovidDeaths
 Group by Location, Population, date
-order by PercentPopulationInfected desc
+order by Location ASC, PercentPopulationInfected desc
